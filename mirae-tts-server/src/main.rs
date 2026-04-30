@@ -5,12 +5,12 @@ use std::sync::Arc;
 use std::time::Instant;
 
 use axum::{
+    Json, Router,
     body::Body,
     extract::{Query, State},
-    http::{header, HeaderValue, StatusCode},
+    http::{HeaderValue, StatusCode, header},
     response::{Html, IntoResponse, Response},
-    routing::{get},
-    Json, Router,
+    routing::get,
 };
 use bytes::Bytes;
 use clap::Parser;
@@ -20,7 +20,7 @@ use tokio_stream::wrappers::ReceiverStream;
 use tower_http::cors::CorsLayer;
 use tracing::info;
 
-use mirae_tts_engine::{encode_wav_vec, pcm_i16le_to_bytes, TtsConfig, TtsEngine};
+use mirae_tts_engine::{TtsConfig, TtsEngine, encode_wav_vec, pcm_i16le_to_bytes};
 
 #[derive(Parser)]
 #[command(name = "tts_server")]
@@ -267,9 +267,18 @@ async fn main() {
 
     let app = Router::new()
         .route("/", get(index))
-        .route("/api/synthesize", get(synthesize_wav_get).post(synthesize_wav))
-        .route("/api/synthesize_stream", get(synthesize_stream_get).post(synthesize_stream))
-        .route("/api/synthesize_raw", get(synthesize_raw_get).post(synthesize_raw))
+        .route(
+            "/api/synthesize",
+            get(synthesize_wav_get).post(synthesize_wav),
+        )
+        .route(
+            "/api/synthesize_stream",
+            get(synthesize_stream_get).post(synthesize_stream),
+        )
+        .route(
+            "/api/synthesize_raw",
+            get(synthesize_raw_get).post(synthesize_raw),
+        )
         .layer(CorsLayer::permissive())
         .with_state(state);
 

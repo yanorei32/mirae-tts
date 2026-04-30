@@ -2136,7 +2136,7 @@ pub fn neutralize_codas(syllables: &mut [u16]) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::korean::{decompose_char, pack_syllable, DecomposedChar};
+    use crate::korean::{DecomposedChar, decompose_char, pack_syllable};
 
     /// Helper: decompose Korean text into raw packed syllable IDs
     fn text_to_raw_ids(text: &str) -> Vec<u16> {

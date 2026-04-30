@@ -5,7 +5,7 @@ use std::io::{self, Read, Write};
 use std::path::PathBuf;
 
 use clap::{Parser, ValueEnum};
-use mirae_tts_engine::{encode_wav_vec, pcm_i16le_to_bytes, TtsConfig, TtsEngine};
+use mirae_tts_engine::{TtsConfig, TtsEngine, encode_wav_vec, pcm_i16le_to_bytes};
 
 #[derive(Parser)]
 #[command(
@@ -152,7 +152,10 @@ fn synthesize_pcm_stream<W: Write>(
             Err(_) => return false,
         }
         wrote = true;
-        if let Err(e) = w.flush() && reader_may_hang_up && e.kind() == io::ErrorKind::BrokenPipe {
+        if let Err(e) = w.flush()
+            && reader_may_hang_up
+            && e.kind() == io::ErrorKind::BrokenPipe
+        {
             reader_disconnected = true;
             return false;
         }

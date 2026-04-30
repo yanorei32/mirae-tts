@@ -14,20 +14,19 @@ use mirae_tts_engine::{TtsConfig, TtsEngine, encode_wav_vec, pcm_i16le_to_bytes}
 )]
 struct Cli {
     /// Directory with VoiceInfo.pkg and VoiceData.pkg
+    #[arg(short, long, default_value = "/var/mirae-tts/Voice")]
     voice_dir: PathBuf,
+
     /// Text to synthesize (default: read stdin)
-    #[arg(short = 't', long = "text")]
+    #[arg(short, long)]
     text: Option<String>,
+
     /// Write output here (default: stdout)
-    #[arg(short = 'o', long = "output")]
+    #[arg(short, long)]
     output: Option<PathBuf>,
+
     /// Output container / encoding
-    #[arg(
-        short = 'f',
-        long = "format",
-        value_enum,
-        default_value_t = OutputFormat::Wav
-    )]
+    #[arg(short, long, value_enum, default_value_t = OutputFormat::Wav)]
     format: OutputFormat,
 }
 

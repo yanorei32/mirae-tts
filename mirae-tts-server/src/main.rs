@@ -1,6 +1,8 @@
 //! 미래 2.0 HTTP API. `GET /` = bundled UI. WAV / stream (`audio/l16`) / raw PCM; POST JSON `{"text":"…"}` or GET `?text=`.
 //! `Arc<TtsEngine>` only — VoiceData is pread/`Send+Sync`, no mutex on synthesize.
 
+use std::net::SocketAddr;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Instant;
 
@@ -27,15 +29,15 @@ use mirae_tts_engine::{TtsConfig, TtsEngine, encode_wav_vec, pcm_i16le_to_bytes}
 #[command(about = "미래 2.0 TTS — Web API server")]
 struct Cli {
     /// Socket address to bind to.
-    #[arg(long, env = "LISTEN", default_value = "0.0.0.0:3000")]
-    listen: String,
+    #[arg(long, env, default_value = "0.0.0.0:3000")]
+    listen: SocketAddr,
 
     /// Path to the dictionary directory (VoiceInfo.pkg, VoiceData.pkg, …).
-    #[arg(long = "dic", env = "DIC", default_value = "/var/mirae-tts/Voice")]
-    dic: String,
+    #[arg(long, env, default_value = "/var/mirae-tts/Voice")]
+    voice_dir: PathBuf,
 
     /// Maximum length of text to synthesize (Unicode scalar count; 0 = unlimited).
-    #[arg(long = "maximum-length", env = "MAXIMUM_LENGTH", default_value_t = 0)]
+    #[arg(long, env, default_value_t = 0)]
     maximum_length: usize,
 }
 
@@ -245,10 +247,10 @@ async fn main() {
     tracing_subscriber::fmt().init();
 
     let cli = Cli::parse();
-    info!("Loading voice data from {:?}...", cli.dic);
+    info!("Loading voice data from {:?}...", cli.voice_dir);
 
     let engine = TtsEngine::new(
-        &cli.dic,
+        &cli.voice_dir,
         TtsConfig {
             log_progress: true,
             ..Default::default()

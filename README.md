@@ -29,7 +29,6 @@ cargo run -p mirae-tts-cli --release -- [OPTIONS] <VOICE_DIR>
 | ------------ | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `wav`        | `wave`   | WAV container, mono PCM16 LE.                                                                                                                                               |
 | `pcm`        | `raw`    | One raw mono PCM16 LE buffer (no header); same layout as `GET /api/synthesize_raw`.                                                                                         |
-
 | `pcm-stream` | `stream` | Raw mono PCM16 LE written **incrementally** as segments complete; chunking matches the HTTP `audio/l16` stream. With stdout, a closed pipe (e.g. player exited) is ignored. |
 
 

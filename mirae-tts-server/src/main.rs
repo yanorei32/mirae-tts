@@ -31,7 +31,7 @@ struct Cli {
     listen: String,
 
     /// Path to the dictionary directory (VoiceInfo.pkg, VoiceData.pkg, …).
-    #[arg(long = "dic", env = "DIC", default_value = "./Voice")]
+    #[arg(long = "dic", env = "DIC", default_value = "/var/mirae-tts/Voice")]
     dic: String,
 
     /// Maximum length of text to synthesize (Unicode scalar count; 0 = unlimited).

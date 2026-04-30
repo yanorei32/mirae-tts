@@ -230,9 +230,8 @@ jobs:
           sudo mv rc /bin/
 
           rc alias set yr32srv https://rustfs-s3.yr32.net mirae-tts-ci "${{ secrets.YR32SRV_MIRAETTS_CI_SECRET }}"
-          pushd packages
           rc cp yr32srv/mirae-tts/Voice.zip ./Voice.zip
-          popd
+          unzip Voice.zip
 
       - uses: docker/metadata-action@v6.0.0
         id: meta

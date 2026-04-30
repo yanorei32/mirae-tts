@@ -17,6 +17,7 @@ use axum::{
 use bytes::Bytes;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
+use tokio::signal::unix::{SignalKind, signal};
 use tokio::sync::mpsc;
 use tokio_stream::wrappers::ReceiverStream;
 use tower_http::cors::CorsLayer;
@@ -287,9 +288,19 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind(&cli.listen)
         .await
         .expect("Failed to bind");
+
     info!(
         "Listening on: {}",
         listener.local_addr().expect("local_addr")
     );
-    axum::serve(listener, app).await.expect("Server error");
+
+    let mut sigterm = signal(SignalKind::terminate()).unwrap();
+
+    tokio::select! {
+        _ = sigterm.recv() => {},
+        _ = tokio::signal::ctrl_c() => {},
+        e = axum::serve(listener, app) => {
+            e.expect("Server Error");
+        },
+    }
 }

@@ -4,6 +4,7 @@
     "config:recommended",
     "https://github.com/arkedge/renovate-config/raw/main/rust-toolchain.json5"
   ],
+  "forkProcessing": "enabled",
   "regexManagers": [
     {
       "fileMatch": [".*\\.yml"],
